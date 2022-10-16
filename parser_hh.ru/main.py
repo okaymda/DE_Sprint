@@ -19,6 +19,7 @@ headers = {'Accept': '*/*',
         'sec-ch-ua': '"Chromium";v="102", "Opera";v="88", ";Not A Brand";v="99"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"Windows"',}
+
 for page in range(1, 5):
         if page != 1:
                 url = f'https://hh.ru/search/vacancy?text=python+разработчик&from=suggest_post&area=&page={page}&hhtmFrom=vacancy_search_list'
@@ -28,7 +29,7 @@ for page in range(1, 5):
         soup = BeautifulSoup(resp.text, "lxml")
         tags = soup.find_all(attrs={'class':'serp-item__title'})
         for item in tqdm.tqdm(tags):
-                #time.sleep(2)
+                time.sleep(2)
                 url_job = item.attrs['href']
                 resp_job = req.get(url_job, headers=headers)
                 soup_job = soup = BeautifulSoup(resp_job.text, "lxml")
