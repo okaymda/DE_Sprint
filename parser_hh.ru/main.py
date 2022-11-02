@@ -20,7 +20,7 @@ headers = {'Accept': '*/*',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"Windows"',}
 
-for page in range(1, 5):
+for page in range(1, 38):
         if page != 1:
                 url = f'https://hh.ru/search/vacancy?text=python+разработчик&from=suggest_post&area=&page={page}&hhtmFrom=vacancy_search_list'
         else:
@@ -29,7 +29,7 @@ for page in range(1, 5):
         soup = BeautifulSoup(resp.text, "lxml")
         tags = soup.find_all(attrs={'class':'serp-item__title'})
         for item in tqdm.tqdm(tags):
-                time.sleep(2)
+                time.sleep(1)
                 url_job = item.attrs['href']
                 resp_job = req.get(url_job, headers=headers)
                 soup_job = soup = BeautifulSoup(resp_job.text, "lxml")
@@ -37,13 +37,21 @@ for page in range(1, 5):
                 if tag_salary:
                         tag_salary = tag_salary.text
                 else:
-                        tag_salary = ''
+                        tag_salary = "з/п не указана"
                 tag_region = soup.find(attrs={'data-qa':'vacancy-view-raw-address'})
                 if tag_region:
                         tag_region = tag_region.text
                 else:
-                        tag_region = soup.find(attrs={'data-qa':'vacancy-view-location'}).text
-                tag_workExperience = soup.find(attrs={'data-qa':'vacancy-experience'}).text
+                        tag_region = soup.find(attrs={'data-qa': 'vacancy-view-location'})
+                        if tag_region:
+                                tag_region = tag_region.text
+                        else:
+                                tag_region = "регион не указан"
+                tag_workExperience = soup.find(attrs={'data-qa':'vacancy-experience'})
+                if tag_workExperience:
+                        tag_workExperience = tag_workExperience.text
+                else:
+                        tag_workExperience = "опыт работы не указан"
 
                 data["data"].append({"title":item.text,
                                      "work experience:": tag_workExperience,
